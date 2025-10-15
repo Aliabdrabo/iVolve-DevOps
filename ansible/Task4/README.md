@@ -1,4 +1,5 @@
-# Automated Web Server Configuration Using Ansible Playbooks
+# ansible-vault encrypt vault.yml
+
 
 ## Objectives
 
