@@ -53,7 +53,6 @@
    ```bash
    ansible-playbook -i inventory.ini playbook1.yml -k
    
-   `-k` → ask for SSH password (if no key-based authentication).
    
 4. **Verify Configuration**: 
    ```bash
