@@ -6,7 +6,7 @@ pipeline {
     }
     
     tools {
-        maven 'mvn'  // أو الاسم اللي ضفته في Global Tool Configuration
+        maven 'mvn'  
     }
     
     stages {
