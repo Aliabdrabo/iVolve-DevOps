@@ -58,7 +58,7 @@ pipeline {
         stage('Update Deployment') {
             steps {
                 dir('Jenkins_App') {
-                    sh 'sed -i s|image:.*|image: alia153/jenkins-ivolve:v6| deployment/deployment.yaml'
+                    sh 'sed -i s|image:.*|image: alia153/jenkins-ivolve:v6| deployment.yaml'
                 }
             }
         }
