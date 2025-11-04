@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+    
+    environment {
+         IMAGE_NAME = "alia153/jenkins-ivolve"
+    }
+    
+     tools {
+        maven 'Maven-3.9.11'  
+    }
+    
+    stages {
+        stage('clonning the repo') {
+            steps {
+               git url: 'https://github.com/Ibrahim-Adel15/Jenkins_App.git', branch: 'main'
+            }
+        }
+        
+        stage('Run Unit Test') {
+            steps {
+                sh"mvn test"
+            }
+        }
+        
+        stage('Build the app') {
+            steps {
+                sh"mvn package"
+            }
+        }
+        
+        stage('Build docker image') {
+            steps {
+                sh "docker build -t ${IMAGE_NAME}:v${BUILD_NUMBER} ."
+            }
+        }    
+        
+        stage('push docker image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    sh "docker push ${IMAGE_NAME}:v${BUILD_NUMBER}"
+                }
+            }
+        }    
+        
+        
+        
+        stage('Delete image locally') {
+            steps {
+                sh "docker rmi ${IMAGE_NAME}:v${BUILD_NUMBER}"
+            }
+        }
+        
+        stage('Update Deployment') {
+            steps {
+                sh "sed -i 's|image:.*|image: ${IMAGE_NAME}:v${BUILD_NUMBER}|' deployment.yaml"
+            }
+        }
+        
+        stage('Deploy to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh "kubectl apply -f deployment.yaml"
+                }
+            }
+        }
+        post {
+	    success {
+		echo "✅ Pipeline succeeded!"
+	    }
+	    failure {
+		echo "❌ Pipeline failed!"
+	    }
+	    always {
+		echo "🔄 Pipeline finished"
+	    }
+	}
+        
+    }
+}
