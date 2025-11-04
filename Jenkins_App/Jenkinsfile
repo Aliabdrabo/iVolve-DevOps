@@ -18,20 +18,25 @@ pipeline {
         
         stage('Run Unit Test') {
             steps {
-                sh "cd Jenkins_App"
-                sh "mvn test"
+                dir('Jenkins_App') {
+                    sh 'mvn test'
+                }
             }
         }
         
         stage('Build the app') {
             steps {
-                sh "mvn package"
+                 dir('Jenkins_App') {
+                    sh 'mvn package'
+                }
             }
         }
         
         stage('Build Docker image') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:v${BUILD_NUMBER} ."
+                 dir('Jenkins_App') {
+                    sh "docker build -t ${IMAGE_NAME}:v${BUILD_NUMBER} ."
+                }
             }
         }
         
