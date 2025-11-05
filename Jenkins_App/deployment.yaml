@@ -21,6 +21,6 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: jenkins-app
-          image: alia153/jenkins-ivolve:v1  
+          image: alia153/jenkins-ivolve:v9  
           ports:
             - containerPort: 8080
